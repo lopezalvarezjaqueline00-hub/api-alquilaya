@@ -1,0 +1,237 @@
+### =========================================================
+### API AlquilaYA - pruebas con la extensión REST Client de VS Code
+### 1) Inicia la app:  .\mvnw.cmd spring-boot:run   (MySQL encendido)
+### 2) Da clic en "Send Request" sobre cada petición, en orden.
+### =========================================================
+
+@host = http://localhost:8080
+
+### ---------------- OFICINAS ----------------
+
+### Crear oficina
+POST {{host}}/api/oficinas
+Content-Type: application/json
+
+{
+  "nombre": "AlquilaYA Centro",
+  "direccion": "Av. Reforma 123, Col. Centro",
+  "ciudad": "Puebla",
+  "region": "Centro"
+}
+
+### Listar oficinas
+GET {{host}}/api/oficinas
+
+### Oficina por ID
+GET {{host}}/api/oficinas/1
+
+### Oficinas por ciudad
+GET {{host}}/api/oficinas/ciudad/puebla
+
+### Actualizar oficina
+PUT {{host}}/api/oficinas/1
+Content-Type: application/json
+
+{
+  "nombre": "AlquilaYA Centro Histórico",
+  "direccion": "Av. Reforma 123, Col. Centro",
+  "ciudad": "Puebla",
+  "region": "Centro"
+}
+
+### ---------------- VEHÍCULOS ----------------
+
+### Crear vehículo (asignado a la oficina 1)
+POST {{host}}/api/vehiculos
+Content-Type: application/json
+
+{
+  "marca": "Nissan",
+  "modelo": "Versa",
+  "anio": 2024,
+  "matricula": "TXA-123-A",
+  "tarifaDiaria": 650.00,
+  "estado": "DISPONIBLE",
+  "oficina": { "idOficina": 1 }
+}
+
+### Crear otro vehículo
+POST {{host}}/api/vehiculos
+Content-Type: application/json
+
+{
+  "marca": "Volkswagen",
+  "modelo": "Jetta",
+  "anio": 2023,
+  "matricula": "TXB-456-B",
+  "tarifaDiaria": 900.00,
+  "oficina": { "idOficina": 1 }
+}
+
+### Matrícula repetida (debe responder 400)
+POST {{host}}/api/vehiculos
+Content-Type: application/json
+
+{
+  "marca": "Kia",
+  "modelo": "Rio",
+  "anio": 2022,
+  "matricula": "TXA-123-A",
+  "tarifaDiaria": 500.00
+}
+
+### Listar vehículos
+GET {{host}}/api/vehiculos
+
+### Vehículo por ID
+GET {{host}}/api/vehiculos/1
+
+### Vehículo por matrícula
+GET {{host}}/api/vehiculos/matricula/TXA-123-A
+
+### Vehículos disponibles
+GET {{host}}/api/vehiculos/estado/disponible
+
+### Vehículos de la oficina 1
+GET {{host}}/api/oficinas/1/vehiculos
+
+### Actualizar vehículo
+PUT {{host}}/api/vehiculos/2
+Content-Type: application/json
+
+{
+  "marca": "Volkswagen",
+  "modelo": "Jetta",
+  "anio": 2023,
+  "matricula": "TXB-456-B",
+  "tarifaDiaria": 950.00,
+  "estado": "DISPONIBLE",
+  "oficina": { "idOficina": 1 }
+}
+
+### ---------------- CLIENTES ----------------
+
+### Crear cliente
+POST {{host}}/api/clientes
+Content-Type: application/json
+
+{
+  "nombre": "Ana",
+  "apellido": "Pérez",
+  "email": "ana.perez@correo.com",
+  "licenciaConducir": "PUE-1234567",
+  "telefono": "2221234567"
+}
+
+### Email inválido (debe responder 400)
+POST {{host}}/api/clientes
+Content-Type: application/json
+
+{
+  "nombre": "Luis",
+  "apellido": "Gómez",
+  "email": "esto-no-es-un-email",
+  "licenciaConducir": "PUE-7654321"
+}
+
+### Listar clientes
+GET {{host}}/api/clientes
+
+### Cliente por ID
+GET {{host}}/api/clientes/1
+
+### Cliente por email
+GET {{host}}/api/clientes/email/ana.perez@correo.com
+
+### Cliente por licencia
+GET {{host}}/api/clientes/licencia/PUE-1234567
+
+### Actualizar cliente
+PUT {{host}}/api/clientes/1
+Content-Type: application/json
+
+{
+  "nombre": "Ana María",
+  "apellido": "Pérez",
+  "email": "ana.perez@correo.com",
+  "licenciaConducir": "PUE-1234567",
+  "telefono": "2229998888"
+}
+
+### ---------------- ALQUILERES ----------------
+
+### Registrar alquiler (precioTotal se calcula: 3 días x 650 = 1950)
+POST {{host}}/api/alquileres
+Content-Type: application/json
+
+{
+  "vehiculo": { "idVehiculo": 1 },
+  "cliente": { "idCliente": 1 },
+  "fechaAlquiler": "2026-10-15",
+  "fechaDevolucion": "2026-10-18"
+}
+
+### Mismo vehículo en fechas que se cruzan (debe responder 400)
+POST {{host}}/api/alquileres
+Content-Type: application/json
+
+{
+  "vehiculo": { "idVehiculo": 1 },
+  "cliente": { "idCliente": 1 },
+  "fechaAlquiler": "2026-10-17",
+  "fechaDevolucion": "2026-10-20"
+}
+
+### Fechas inválidas (debe responder 400)
+POST {{host}}/api/alquileres
+Content-Type: application/json
+
+{
+  "vehiculo": { "idVehiculo": 2 },
+  "cliente": { "idCliente": 1 },
+  "fechaAlquiler": "2026-10-20",
+  "fechaDevolucion": "2026-10-18"
+}
+
+### Listar alquileres
+GET {{host}}/api/alquileres
+
+### Alquiler por ID
+GET {{host}}/api/alquileres/1
+
+### Alquileres de un cliente
+GET {{host}}/api/alquileres/cliente/1
+
+### Alquileres de un vehículo
+GET {{host}}/api/alquileres/vehiculo/1
+
+### Alquileres activos
+GET {{host}}/api/alquileres/estado/activo
+
+### Finalizar alquiler (el vehículo vuelve a DISPONIBLE)
+PATCH {{host}}/api/alquileres/1/finalizar
+
+### Registrar y luego cancelar un alquiler
+POST {{host}}/api/alquileres
+Content-Type: application/json
+
+{
+  "vehiculo": { "idVehiculo": 2 },
+  "cliente": { "idCliente": 1 },
+  "fechaAlquiler": "2026-11-01",
+  "fechaDevolucion": "2026-11-05"
+}
+
+### Cancelar alquiler 2 (el vehículo vuelve a DISPONIBLE)
+PATCH {{host}}/api/alquileres/2/cancelar
+
+### ---------------- ELIMINAR ----------------
+
+### Eliminar alquiler 2
+DELETE {{host}}/api/alquileres/2
+
+### Eliminar un registro que no existe (debe responder 404)
+DELETE {{host}}/api/vehiculos/999
+
+### Oficina con vehículos asignados (debe responder 409)
+DELETE {{host}}/api/oficinas/1
