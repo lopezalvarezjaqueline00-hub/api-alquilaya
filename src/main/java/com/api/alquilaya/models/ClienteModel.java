@@ -2,7 +2,7 @@ package com.api.alquilaya.models;
 
 import jakarta.persistence.*;
 import java.util.List;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
@@ -36,7 +36,7 @@ public class ClienteModel {
     private String telefono; // Número de teléfono del cliente - longitud máxima de 20 caracteres
 
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnoreProperties("cliente") 
+    @JsonIgnore // Se consulta con /api/alquileres/... ; evita referencias circulares en el JSON
     private List<AlquilerModel> alquileres; // Lista de alquileres asociados al cliente
 
     // Constructores, getters y setters para la clase ClienteModel

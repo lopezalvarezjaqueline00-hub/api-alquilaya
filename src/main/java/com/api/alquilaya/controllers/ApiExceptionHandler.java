@@ -34,7 +34,8 @@ public class ApiExceptionHandler {
     // JSON mal escrito o con tipos incorrectos (por ejemplo, una fecha con formato inválido)
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Map<String, Object>> jsonInvalido(HttpMessageNotReadableException ex) {
-        return respuesta(HttpStatus.BAD_REQUEST, "El cuerpo JSON no es válido. Revisa el formato (fechas: yyyy-MM-dd)");
+        String detalle = ex.getMostSpecificCause() == null ? "" : ex.getMostSpecificCause().getMessage();
+        return respuesta(HttpStatus.BAD_REQUEST, "El cuerpo JSON no es válido. Revisa el formato (fechas: yyyy-MM-dd). Detalle: " + detalle);
     }
 
     // Violaciones de la base de datos (datos únicos repetidos, registros relacionados, etc.)

@@ -171,8 +171,7 @@ Content-Type: application/json
     "direccion": "Av. Reforma 123, Col. Centro",
     "ciudad": "Puebla",
     "region": "Centro"
-  },
-  "alquileres": null
+  }
 }
 ```
 

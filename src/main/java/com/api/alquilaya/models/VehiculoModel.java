@@ -3,7 +3,7 @@ package com.api.alquilaya.models;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -46,7 +46,7 @@ public class VehiculoModel {
     private OficinaAlquilerModel oficina; // Oficina de alquiler a la que pertenece el vehículo
 
     @OneToMany(mappedBy = "vehiculo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnoreProperties("vehiculo") 
+    @JsonIgnore // Se consulta con /api/alquileres/... ; evita referencias circulares en el JSON
     private List<AlquilerModel> alquileres; // Lista de alquileres asociados al vehículo
 
     // Constructores, getters y setters para la clase VehiculoModel
